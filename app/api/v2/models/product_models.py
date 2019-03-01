@@ -32,14 +32,14 @@ class ProductRecord():
          self.db.commit()
          return data
 
-    def get_all_meetup_records(self):
-       query = """ SELECT * FROM meetups ORDER BY id DESC"""
+    def get_all_products(self):
+       query = """ SELECT * FROM products ORDER BY id DESC"""
        cur = self.db.cursor(cursor_factory=RealDictCursor)
        cur.execute(query)
        return cur.fetchall()
 
-    def get_specific_meetup_record(self, id):
-         query = "SELECT * FROM meetups WHERE id = '{}'".format(id)
+    def get_specific_product(self, id):
+         query = "SELECT * FROM products WHERE id = '{}'".format(id)
          cur = self.db.cursor(cursor_factory=RealDictCursor)
          cur.execute(query)
          data =cur.fetchall()
@@ -48,8 +48,8 @@ class ProductRecord():
          else:
              return None
 
-    def delete_specific_meetups(self,id):
-        query = " DELETE FROM meetups WHERE id={};".format(id)
+    def delete_product(self,id):
+        query = " DELETE FROM products WHERE id={};".format(id)
         cur = self.db.cursor()
         cur.execute(query)
         self.db.commit()

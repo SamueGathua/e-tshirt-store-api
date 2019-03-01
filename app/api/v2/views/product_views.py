@@ -24,8 +24,8 @@ class AddProduct(Resource, ProductRecord):
 
     def get(self):
         return make_response(jsonify({"status":200,
-                                    "message":"The available meetup records are",
-                                    "data": self.records.get_all_meetup_records()}), 200)
+                                    "message":"The available products records are",
+                                    "data": self.records.get_all_products()}), 200)
 
     @jwt_required
     def post(self):
