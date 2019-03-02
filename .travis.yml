@@ -9,7 +9,7 @@ install:
     - pip install coveralls
     - pip install codeclimate-test-reporter
 before_script:
-  - psql -c 'create database questionerdb;' -U postgres
+  - psql -c 'create database etshirtstore;' -U postgres
 script:
     - coverage run --source=app -m pytest && coverage report
 
