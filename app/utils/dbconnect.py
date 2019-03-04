@@ -1,5 +1,7 @@
 import os
 import psycopg2
+from psycopg2.extras import RealDictCursor
+from werkzeug.security import generate_password_hash
 from .tables import Tables
 
 DB_URL = os.getenv('DATABASE_URL')
