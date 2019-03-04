@@ -1,5 +1,5 @@
 import datetime
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from .base_models import BaseModels
 
 
@@ -9,7 +9,7 @@ class UserRecord():
         self.models = BaseModels('users')
 
     def register_user(self, user_data, role):
-        ''' Creates a new user record'''
+        """ Creates a new user record"""
         if user_data['password'] != user_data['repeat_password']:
             return "No match"
         if self.models.get_data("email",user_data['email']):
@@ -22,7 +22,7 @@ class UserRecord():
             "phonenumber" : user_data['phonenumber'],
             "email" : user_data['email'],
             "registered_on":datetime.datetime.now(),
-            "password" : generate_password_hash(user_data['password'])
+            "password" : generate_password_hash( user_data['password'],method='pbkdf2:sha256', salt_length=8)
         }
         if role: # if admin
             data['isadmin'] = True
@@ -39,12 +39,10 @@ class UserRecord():
         return self.models.get_all_records()
 
     def login_user(self, data):
-        """ Check if a user exists and compare passwords"""
-        result = True
-        credentials = self.models.get_data('email', data['email'])
-        available = self.models.check_exists('email', data['email'])
-        if credentials == None:
-            result = "not_found"
-        elif not check_password_hash(credentials['password'],data['password']):
-            result = False
-        return result
+        user_data = None,
+        user_data = self.models.get_data("email",data['email'])
+        print(user_data)
+        if user_data == None:
+            return False
+
+        return user_data

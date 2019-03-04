@@ -72,20 +72,22 @@ class Admin(User, Resource):
 class Login(UserRecord, Resource):
     """ Class to authenticate a user"""
     def __init__(self):
-        self.models = UserRecord()
+        self.records = UserRecord()
 
     def post(self):
         """ endpoint for user login"""
-        json_data = request.get_json()
-        response = self.models.login_user(json_data)
-        if response == "not_found":
-            return make_response(jsonify({"status" : 404,
-                                          "error": "User does not exists!"}), 404)
-        elif response is False:
-            return make_response(jsonify({"status" : 400,
-                                          "error": "Wrong usernamepassword combination!"}), 400)
-        access_token = create_access_token(identity=json_data['email'],)
-        return make_response(jsonify({"status" : 200,
-                                      "message": "Logged in as {}"\
-                                      .format(json_data['email'].split("@")[0]),
-                                      "access_token" : access_token}), 200)
+        data = request.get_json()
+        user_data = self.records.login_user(data)
+        if user_data:
+            access_token = create_access_token(identity= user_data['email'].strip())
+            if check_password_hash(user_data['password'].strip(), data['password']):
+
+                return make_response(jsonify({"message":"Login for {} is succesful".format(data['email']),
+                                              "status":200,
+                                             "token":access_token}), 200)
+            else:
+                return make_response(jsonify({"status":400,
+                                            "error":"Incorrect password"}), 400)
+
+        return make_response(jsonify({"status":404,
+                                    "error":"user does not exist"}), 404)
