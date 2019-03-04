@@ -20,10 +20,10 @@ class Tables():
         title VARCHAR(50) NOT NULL,
         info VARCHAR(50) NOT NULL,
         img VARCHAR(32) NOT NULL,
-        price VARCHAR(32) NOT NULL,
+        price INT NOT NULL,
         posted_on TIMESTAMP,
         company VARCHAR (25) NOT NULL,
-        quantity VARCHAR (25) NOT NULL,
+        quantity INT NOT NULL,
         PRIMARY KEY (Id, U_id)
         )"""
 
