@@ -1,38 +1,50 @@
 import datetime
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
+from .base_models import BaseModels
 
-from ....utils.dbconnect import init_db
 
-class UserRecords():
+class UserRecord():
+    """ Views for user records """
     def __init__(self):
-        self.db = init_db()
+        self.models = BaseModels('users')
 
-    def register_user(self, data):
+    def register_user(self, user_data, role):
+        ''' Creates a new user record'''
+        if user_data['password'] != user_data['repeat_password']:
+            return "No match"
+        if self.models.get_data("email",user_data['email']):
+            return False
         data = {
-        "registered_on":datetime.datetime.now(),
-        "firstname": data['firstname'],
-        "lastname": data['lastname'],
-        "othername": data['othername'],
-        "email": data['email'],
-        "phonenumber":data['phonenumber'],
-        "password":generate_password_hash(
-        data['password'],method='pbkdf2:sha256', salt_length=8),
+            "isadmin" : False,
+            "firstname" : user_data['firstname'],
+            "lastname" : user_data['lastname'],
+            "othername" : user_data['othername'],
+            "phonenumber" : user_data['phonenumber'],
+            "email" : user_data['email'],
+            "registered_on":datetime.datetime.now(),
+            "password" : generate_password_hash(user_data['password'])
         }
-        query = """INSERT INTO users(FirstName, LastName, OtherName,\
-        Email,Password,RegisteredOn,PhoneNumber)
-        VALUES ('%s', '%s', '%s', '%s','%s','%s','%s');""" % \
-        (data['firstname'], data['lastname'], data['othername'], data['email'],\
-        data['password'], data['registered_on'],data['phonenumber'])
-        cur = self.db.cursor()
-        cur.execute(query)
-        self.db.commit()
-        return data
+        if role: # if admin
+            data['isadmin'] = True
+        query = """INSERT INTO users(isadmin,firstname,lastname,phonenumber,\
+                                          othername,email,registered_on,password)
+        VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s','%s');""" % \
+        (data['isadmin'], data['firstname'], data['lastname'],\
+          data['othername'],\
+         data['phonenumber'], data['email'], data['registered_on'],data['password'])
+        return self.models.save(query, data)
 
-    def login_user(self, email):
-        cursor = self.db.cursor()
-        cursor.execute(
-        "SELECT password, email FROM users WHERE email = '{}'".format(email))
-        user_data = cursor.fetchone()
-        if user_data:
-            return user_data
-        return None
+    def get_all_users(self):
+        """Get the records for all the registered users"""
+        return self.models.get_all_records()
+
+    def login_user(self, data):
+        """ Check if a user exists and compare passwords"""
+        result = True
+        credentials = self.models.get_data('email', data['email'])
+        available = self.models.check_exists('email', data['email'])
+        if credentials == None:
+            result = "not_found"
+        elif not check_password_hash(credentials['password'],data['password']):
+            result = False
+        return result

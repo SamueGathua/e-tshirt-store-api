@@ -4,9 +4,11 @@ from flask import Blueprint
 version_two = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 api = Api(version_two)
 
-from .views.user_views import RegisterUser, LoginUser
-from .views.product_views import AddProduct
+from .views.user_views import User,Admin,Login
+from .views.product_views import Product,SpecificProduct
 
-api.add_resource(RegisterUser, '/user/register')
-api.add_resource(LoginUser, '/user/login')
-api.add_resource(AddProduct, '/products')
+api.add_resource(User, '/user/register')
+api.add_resource(Admin, '/admin/register')
+api.add_resource(Login, '/user/login')
+api.add_resource(Product, '/products')
+api.add_resource(SpecificProduct, '/products/<int:id>')

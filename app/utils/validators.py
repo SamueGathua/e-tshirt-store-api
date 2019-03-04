@@ -1,27 +1,33 @@
 import re
+from marshmallow import ValidationError
 
-class Validations():
 
-
+class Views():
+    """ Validate views endpoints data """
     def validate_email(self, email):
-        expects = "^[\w]+[\d]?@[\w]+\.[\w]+$"
-        return re.match(expects, email)
-
+        """ Valiadte email format """
+        if re.match(r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", email) is None:
+            raise ValidationError("Invalid email address!")
+        return email
 
     def validate_password(self, password):
+        """ Validate user password"""
+        self.validate_all_values(password)
+        if re.search('[0-9]', password) is None:
+            raise ValidationError('Password must have at least one number!')
 
-        valid = "^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})"
-        return re.match(valid, password)
+        elif re.search('[a-z]', password) is None:
+            raise ValidationError('Password must have at least one alphabet letter!')
 
-    def validate_white_space(self,field):
-        return re.match(r'^[a-zA-Z]+$', field)
+        else:
+            return password
 
-    def check_type(self,data):
-        if type(data)== int:
-            return True
-        return False
+    def validate_all_values(self, value):
+        """ Validate if all fields are provided """
+        if isinstance(value, str):
+            if not value.strip(" "):
+                raise ValidationError('This field cannot be empty!')
+        elif value:
+            return value
 
-    def check_password_match(self,password,repeat_password):
-        if password != repeat_password:
-            return False
-        return True
+    
