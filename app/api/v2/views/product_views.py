@@ -29,7 +29,7 @@ class Product(ProductRecord, Resource):
 
         response = self.record.add_product(data, author)
         return make_response(jsonify({"status" : 201,
-                                      "message":"Record added succesfully"
+                                      "message":"Record added succesfully",
                                       "data": response}), 201)
     def get(self):
         return make_response(jsonify({"status":200,
