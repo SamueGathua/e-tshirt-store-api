@@ -17,5 +17,4 @@ def create_app():
     app.config['JWT_SECRET_KEY'] =  os.getenv('SECRET_KEY')
     jwt = JWTManager(app)
     create_tables()
-
     return app

@@ -4,14 +4,14 @@ from psycopg2.extras import RealDictCursor
 
 
 class BaseModels():
-    ''' Constructor that creates a connection and initilizes an instant variable table_name'''
+    """ Constructor that creates a connection and initilizes an instant variable table_name"""
     def __init__(self, record):
         self.connection = init_db()
         self.table_name = record
 
 
     def get_data(self, key, value):
-        ''' Find an item with a specific key and value'''
+        """Find an item with a specific key and value"""
         query = """ SELECT * FROM {} WHERE {}='{}'""".format(self.table_name, key, value)
         cur = self.connection.cursor(cursor_factory=RealDictCursor)
         cur.execute(query)
@@ -21,22 +21,31 @@ class BaseModels():
         return None
 
     def get_all_records(self):
-        ''' Returns all records'''
+        """ Returns all records"""
         query = """ SELECT * FROM {} """.format(self.table_name)
         cur = self.connection.cursor(cursor_factory=RealDictCursor)
         cur.execute(query)
         return cur.fetchall()
 
     def save(self, query, data):
-        ''' Inserts data to the database'''
+        """Inserts data to the database"""
         save = self.connection
         cur = save.cursor(cursor_factory=RealDictCursor)
         cur.execute(query)
         save.commit()
         return data
 
+    def update(self, data):
+        """updates a record in the database"""
+        query = """ UPDATE {} set {} =  {} WHERE id ='{}'""".format(self.table_name,\
+         data['key'], data['value'], data['id'])
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query)
+        self.connection.commit()
+        return data
 
     def delete(self, key, value,):
+        """Deletes a record from the database"""
         query = """ SELECT * FROM {} WHERE {}='{}'""".format(self.table_name, key, value)
         cur = self.connection.cursor(cursor_factory=RealDictCursor)
         cur.execute(query)
@@ -48,7 +57,7 @@ class BaseModels():
         return delete_data
 
     def check_exists(self, key, value):
-        ''' Check if an item exists in the database '''
+        """Check if an item exists in the database """
         query = """ SELECT EXISTS (SELECT * FROM {} WHERE {}='{}');""" \
                     .format(self.table_name, key, value)
         cur = self.connection.cursor(cursor_factory=RealDictCursor)

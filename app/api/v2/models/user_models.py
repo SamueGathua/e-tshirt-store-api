@@ -4,7 +4,7 @@ from .base_models import BaseModels
 
 
 class UserRecord():
-    """ Views for user records """
+    """ Constructor that calls the Constructor in BaseModels"""
     def __init__(self):
         self.models = BaseModels('users')
 
@@ -24,6 +24,7 @@ class UserRecord():
             "registered_on":datetime.datetime.now(),
             "password" : generate_password_hash( user_data['password'],method='pbkdf2:sha256', salt_length=8)
         }
+        """Creates the admin """
         if role: # if admin
             data['isadmin'] = True
         query = """INSERT INTO users(isadmin,firstname,lastname,phonenumber,\
@@ -44,5 +45,4 @@ class UserRecord():
         print(user_data)
         if user_data == None:
             return False
-
         return user_data
