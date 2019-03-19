@@ -32,7 +32,7 @@ class ProductRecord(BaseModels):
 
     def get_all_products(self):
         """Gets all records from the database"""
-       return self.records.get_all_records()
+        return self.records.get_all_records()
 
     def get_specific_product(self,id):
         """Gets a specific record from the database"""
