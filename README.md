@@ -1,5 +1,6 @@
 # E-TSHIRT-STORE
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/bb34ba25ecfdf1535c4f/maintainability)](https://codeclimate.com/github/SamueGathua/e-tshirt-store-api/maintainability)
 
 ## About the project
 An online store for t-shirts
